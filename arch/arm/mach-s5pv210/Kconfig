@@ -383,6 +383,37 @@ config SAMSUNG_P1LN
 endchoice
 endif
 
+config MACH_VENTURI
+	bool "Venturi"
+	select CPU_S5PV210
+	select S3C_DEV_WDT
+	select S3C_DEV_I2C1
+	select S3C_DEV_I2C2
+	select S5P_DEV_ONENAND
+	select HAVE_PWM
+	select SAMSUNG_DEV_PWM
+	select S3C_DEV_HSMMC
+	select S3C_DEV_HSMMC1 if !S5PV210_SD_CH0_8BIT
+	select S3C_DEV_HSMMC2
+	select S3C_DEV_HSMMC3
+	select S5PV210_SETUP_SDHCI
+	select S5P_DEV_CSIS0
+	select S5P_SETUP_MIPIPHY
+	help
+	  Machine support for Venturi
+
+config VENTURI_KOR
+        bool "select VENTURI KOR"
+        depends on MACH_VENTURI
+        help
+        Select VENTURI KOR
+
+config VENTURI_USA
+	bool "select VENTURI USA"
+	depends on MACH_VENTURI
+	help
+	Select VENTURI USA
+
 config S5PV210_SETUP_FB
 	bool
 	depends on FB_S3C
