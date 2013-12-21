@@ -1316,6 +1316,11 @@ static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 
 	host = mmc_priv(mmc);
 
+#ifdef CONFIG_MACH_P1
+	if (host->ops->translate_vdd)
+		host->ops->translate_vdd(host, ios->vdd);
+#endif
+
 	spin_lock_irqsave(&host->lock, flags);
 
 	if (host->flags & SDHCI_DEVICE_DEAD)
@@ -2338,10 +2343,10 @@ int sdhci_suspend_host(struct sdhci_host *host, pm_message_t state)
 
 	if (host->irq)
 		disable_irq(host->irq);
-
+#ifndef CONFIG_PHONE_P1_CDMA
 	if (host->vmmc)
 		ret = regulator_disable(host->vmmc);
-
+#endif
 	return ret;
 }
 
@@ -2351,12 +2356,13 @@ int sdhci_resume_host(struct sdhci_host *host)
 {
 	int ret = 0;
 
+#ifndef CONFIG_PHONE_P1_CDMA
 	if (host->vmmc) {
 		int ret = regulator_enable(host->vmmc);
 		if (ret)
 			return ret;
 	}
-
+#endif
 
 	if (host->flags & (SDHCI_USE_SDMA | SDHCI_USE_ADMA)) {
 		if (host->ops->enable_dma)
@@ -2617,8 +2623,9 @@ int sdhci_add_host(struct sdhci_host *host)
 	    mmc_card_is_removable(mmc))
 		mmc->caps |= MMC_CAP_NEEDS_POLL;
 
-	/* UHS-I mode(s) supported by the host controller. */
-	if (host->version >= SDHCI_SPEC_300)
+	/* Any UHS-I mode in caps implies SDR12 and SDR25 support. */
+	if (caps[1] & (SDHCI_SUPPORT_SDR104 | SDHCI_SUPPORT_SDR50 |
+		       SDHCI_SUPPORT_DDR50))
 		mmc->caps |= MMC_CAP_UHS_SDR12 | MMC_CAP_UHS_SDR25;
 
 	/* SDR104 supports also implies SDR50 support */
@@ -2817,6 +2824,7 @@ int sdhci_add_host(struct sdhci_host *host)
 	if (ret)
 		goto untasklet;
 
+#ifndef CONFIG_PHONE_P1_CDMA
 	host->vmmc = regulator_get(mmc_dev(mmc), "vmmc");
 	if (IS_ERR(host->vmmc)) {
 		printk(KERN_INFO "%s: no vmmc regulator found\n", mmc_hostname(mmc));
@@ -2824,6 +2832,7 @@ int sdhci_add_host(struct sdhci_host *host)
 	} else {
 		regulator_enable(host->vmmc);
 	}
+#endif
 
 	sdhci_init(host, 0);
 
@@ -2912,10 +2921,12 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
 	tasklet_kill(&host->card_tasklet);
 	tasklet_kill(&host->finish_tasklet);
 
+#ifndef CONFIG_PHONE_P1_CDMA
 	if (host->vmmc) {
 		regulator_disable(host->vmmc);
 		regulator_put(host->vmmc);
 	}
+#endif
 
 	kfree(host->adma_desc);
 	kfree(host->align_buffer);

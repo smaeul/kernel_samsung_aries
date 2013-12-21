@@ -9,6 +9,11 @@ busybox rm init
 busybox mount -t proc proc /proc
 busybox mount -t sysfs sysfs /sys
 
+while ! busybox test -d /sys/dev/block/179:0 ; do
+	echo "Waiting for internal mmc..."
+	busybox sleep 1
+done
+
 /lvm/sbin/lvm vgscan --mknodes --ignorelockingfailure
 /lvm/sbin/lvm vgchange -aly --ignorelockingfailure
 
@@ -36,7 +41,7 @@ elif ! busybox test -e /system/build.prop ; then
 
 	UPDATE=$(busybox cat /sdcard/cyanogenmod.cfg)
 
-	if busybox test -n "$UPDATE" && busybox test -e $UPDATE ; then
+	if busybox test -n "$UPDATE" ; then
 		busybox echo "install_zip(\"`echo $UPDATE`\");" > /cache/recovery/extendedcommand
 	fi
 
