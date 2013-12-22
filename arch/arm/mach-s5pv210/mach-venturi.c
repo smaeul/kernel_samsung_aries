@@ -169,6 +169,10 @@ static struct s3c_adc_mach_info s3c_adc_platform __initdata = {
 	.resolution	= 12,
 };
 
+/* I2C0 */
+static struct i2c_board_info i2c_devs0[] __initdata = {
+};
+
 /* I2C1 */
 static struct i2c_board_info i2c_devs1[] __initdata = {
 	{
@@ -438,6 +442,9 @@ static struct platform_device *venturi_devices[] __initdata = {
 #ifdef CONFIG_S3C_DEV_HSMMC3
 	&s3c_device_hsmmc3,
 #endif
+#ifdef CONFIG_S3C_DEV_I2C0
+	&s3c_device_i2c0,
+#endif
 #ifdef CONFIG_S3C_DEV_I2C1
 	&s3c_device_i2c1,
 #endif
@@ -518,6 +525,10 @@ static void __init venturi_machine_init(void)
 #endif
 
 	/* I2C */
+#ifdef CONFIG_S3C_DEV_I2C0
+	s3c_i2c0_set_platdata(NULL);
+	i2c_register_board_info(0, i2c_devs0, ARRAY_SIZE(i2c_devs0));
+#endif
 #ifdef CONFIG_S3C_DEV_I2C1
 	s3c_i2c1_set_platdata(NULL);
 	i2c_register_board_info(1, i2c_devs1, ARRAY_SIZE(i2c_devs1));
