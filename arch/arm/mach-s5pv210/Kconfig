@@ -400,19 +400,21 @@ config MACH_VENTURI
 	select S5P_DEV_CSIS0
 	select S5P_SETUP_MIPIPHY
 	help
-	  Machine support for Venturi
+	  Machine support for Venturi, the Samsung Galaxy S WiFi/
+	  Player 5.0, by default the European version
 
 config VENTURI_KOR
-        bool "select VENTURI KOR"
-        depends on MACH_VENTURI
-        help
-        Select VENTURI KOR
-
-config VENTURI_USA
-	bool "select VENTURI USA"
+	bool "Venturi Korea"
 	depends on MACH_VENTURI
 	help
-	Select VENTURI USA
+	  The Korean Galaxy S WiFi 5.0 has a different back
+	  camera and a TV receiver
+
+config VENTURI_USA
+	bool "Venturi USA"
+	depends on MACH_VENTURI
+	help
+	  The USA Galaxy Player 5.0 has a capacitive home button
 
 config S5PV210_SETUP_FB
 	bool
