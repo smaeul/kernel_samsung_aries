@@ -42,17 +42,17 @@
 
 /* UARTs */
 /* Following are default values for UCON, ULCON and UFCON UART registers */
-#define S5PV210_UCON_DEFAULT	(S3C2410_UCON_TXILEVEL | \
-				 S3C2410_UCON_RXILEVEL | \
-				 S3C2410_UCON_TXIRQMODE | \
-				 S3C2410_UCON_RXIRQMODE	| \
-				 S3C2410_UCON_RXFIFO_TOI | \
+#define S5PV210_UCON_DEFAULT	(S3C2410_UCON_TXILEVEL |	\
+				 S3C2410_UCON_RXILEVEL |	\
+				 S3C2410_UCON_TXIRQMODE |	\
+				 S3C2410_UCON_RXIRQMODE |	\
+				 S3C2410_UCON_RXFIFO_TOI |	\
 				 S3C2443_UCON_RXERR_IRQEN)
 
 #define S5PV210_ULCON_DEFAULT	 S3C2410_LCON_CS8
 
-#define S5PV210_UFCON_DEFAULT	(S3C2410_UFCON_FIFOMODE | \
-				 S5PV210_UFCON_TXTRIG4 | \
+#define S5PV210_UFCON_DEFAULT	(S3C2410_UFCON_FIFOMODE |	\
+				 S5PV210_UFCON_TXTRIG4 |	\
 				 S5PV210_UFCON_RXTRIG4)
 
 static struct s3c2410_uartcfg venturi_uartcfgs[] __initdata = {
@@ -88,7 +88,7 @@ static struct s3c2410_uartcfg venturi_uartcfgs[] __initdata = {
 	},
 };
 
-/* Media devices */
+/* Reserved memory for media devices */
 #define S5PV210_VIDEO_SAMSUNG_MEMSIZE_MFC0 (14 * SZ_1M)
 #define S5PV210_VIDEO_SAMSUNG_MEMSIZE_MFC1 (21 * SZ_1M)
 
@@ -221,7 +221,7 @@ static void config_gpio_table(int array_size, unsigned int (*gpio_table)[4])
 	}
 }
 
-static void s3c_config_sleep_gpio_table(int array_size, unsigned int (*gpio_table)[3])
+static void config_sleep_gpio_table(int array_size, unsigned int (*gpio_table)[3])
 {
 	u32 i, gpio;
 
@@ -240,7 +240,7 @@ static void config_init_gpio(void)
 void s3c_config_sleep_gpio(void)
 {
 	config_gpio_table(ARRAY_SIZE(sleep_alive_gpio_table), sleep_alive_gpio_table);
-	s3c_config_sleep_gpio_table(ARRAY_SIZE(sleep_gpio_table), sleep_gpio_table);
+	config_sleep_gpio_table(ARRAY_SIZE(sleep_gpio_table), sleep_gpio_table);
 }
 EXPORT_SYMBOL(s3c_config_sleep_gpio);
 
