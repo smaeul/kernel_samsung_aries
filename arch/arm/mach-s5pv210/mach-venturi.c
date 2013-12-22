@@ -180,6 +180,29 @@ static struct i2c_board_info i2c_devs1[] __initdata = {
 static struct i2c_board_info i2c_devs2[] __initdata = {
 };
 
+/* RAM Console */
+static unsigned int ram_console_start;
+static unsigned int ram_console_size;
+
+static struct resource ram_console_resource[] = {
+	{
+		.flags = IORESOURCE_MEM,
+	}
+};
+
+static struct platform_device ram_console_device = {
+	.name = "ram_console",
+	.id = -1,
+	.num_resources = ARRAY_SIZE(ram_console_resource),
+	.resource = ram_console_resource,
+};
+
+static void __init setup_ram_console_mem(void)
+{
+	ram_console_resource[0].start = ram_console_start;
+	ram_console_resource[0].end = ram_console_start + ram_console_size - 1;
+}
+
 /* GPIO */
 static void config_gpio_table(int array_size, unsigned int (*gpio_table)[4])
 {
@@ -391,6 +414,7 @@ static struct platform_device watchdog_device = {
 
 /* Init data */
 static struct platform_device *venturi_devices[] __initdata = {
+	&ram_console_device,
 	&s3c_device_adc,
 #ifdef CONFIG_USB_ANDROID
 	&s3c_device_android_usb,
@@ -462,10 +486,15 @@ static void __init venturi_fixup(struct machine_desc *desc,
 	mi->bank[1].size = 255 * SZ_1M;
 
 	mi->nr_banks = 2;
+
+	ram_console_start = mi->bank[1].start + mi->bank[1].size;
+	ram_console_size = SZ_1M - SZ_4K;
 }
 
 static void __init venturi_machine_init(void)
 {
+	setup_ram_console_mem();
+
 	platform_add_devices(venturi_devices, ARRAY_SIZE(venturi_devices));
 
 	/* Initialise the GPIOs */
