@@ -115,7 +115,7 @@ struct fsa9480_usbsw {
 	int				mansw;
 };
 
-#ifdef CONFIG_MACH_P1
+#if defined(CONFIG_MACH_P1) || defined(CONFIG_MACH_VENTURI)
 static struct fsa9480_usbsw *local_usbsw;
 #endif
 
@@ -295,7 +295,7 @@ static struct miscdevice dockaudio_device = {
 int cardock_status = 0;
 int deskdock_status = 0;
 
-#ifdef CONFIG_MACH_P1
+#if defined(CONFIG_MACH_P1) || defined(CONFIG_MACH_VENTURI)
 void fsa9480_manual_switching(int path)
 {
 	struct i2c_client *client = local_usbsw->client;
@@ -366,7 +366,7 @@ static void fsa9480_detect_dev(struct fsa9480_usbsw *usbsw)
 
 	val1 = device_type & 0xff;
 	val2 = device_type >> 8;
-#ifdef CONFIG_MACH_ARIES
+#if defined(CONFIG_MACH_ARIES) || defined(CONFIG_MACH_VENTURI)
 	dev_info(&client->dev, "dev1: 0x%x, dev2: 0x%x\n", val1, val2);
 #else // CONFIG_MACH_P1
 	dev_info(&client->dev, "prev_dev1: 0x%x, prev_dev2: 0x%x\n", usbsw->dev1, usbsw->dev2);
@@ -376,7 +376,7 @@ static void fsa9480_detect_dev(struct fsa9480_usbsw *usbsw)
 	/* Attached */
 	if (val1 || val2) {
 		/* USB */
-#ifdef CONFIG_MACH_ARIES
+#if defined(CONFIG_MACH_ARIES) || defined(CONFIG_MACH_VENTURI)
 		if (val1 & DEV_T1_USB_MASK || val2 & DEV_T2_USB_MASK) {
 			if (pdata->usb_cb)
 				pdata->usb_cb(FSA9480_ATTACHED);
@@ -401,7 +401,7 @@ static void fsa9480_detect_dev(struct fsa9480_usbsw *usbsw)
 		} else if (val1 & DEV_T1_UART_MASK || val2 & DEV_T2_UART_MASK) {
 			if (pdata->uart_cb)
 				pdata->uart_cb(FSA9480_ATTACHED);
-#ifdef CONFIG_MACH_ARIES
+#if defined(CONFIG_MACH_ARIES) || defined(CONFIG_MACH_VENTURI)
 			if (usbsw->mansw) {
 				ret = i2c_smbus_write_byte_data(client,
 					FSA9480_REG_MANSW1, SW_UART);
@@ -495,7 +495,7 @@ static void fsa9480_detect_dev(struct fsa9480_usbsw *usbsw)
 	/* Detached */
 	} else {
 		/* USB */
-#ifdef CONFIG_MACH_ARIES
+#if defined(CONFIG_MACH_ARIES) || defined(CONFIG_MACH_VENTURI)
 		if (usbsw->dev1 & DEV_T1_USB_MASK ||
 				usbsw->dev2 & DEV_T2_USB_MASK) {
 #else // CONFIG_MACH_P1
@@ -699,7 +699,7 @@ static int __devinit fsa9480_probe(struct i2c_client *client,
 		usbsw->pdata->cfg_gpio();
 
 	fsa9480_reg_init(usbsw);
-#ifdef CONFIG_MACH_P1
+#if defined(CONFIG_MACH_P1) || defined(CONFIG_MACH_VENTURI)
 	local_usbsw = usbsw;  // temp
 
 	// set fsa9480 init flag.

@@ -36,7 +36,7 @@ struct fsa9480_platform_data {
 	void (*deskdock_cb) (bool attached);
 	void (*cardock_cb) (bool attached);
 	void (*reset_cb) (void);
-#ifdef CONFIG_MACH_P1
+#if defined(CONFIG_MACH_P1) || defined(CONFIG_MACH_VENTURI)
 	void (*set_init_flag) (void);
 	void (*set_usb_switch) (void);
 #endif
@@ -44,7 +44,7 @@ struct fsa9480_platform_data {
 
 extern int fsa9480_get_dock_status(void);
 
-#ifdef CONFIG_MACH_P1
+#if defined(CONFIG_MACH_P1) || defined(CONFIG_MACH_VENTURI)
 enum {
 	AUTO_SWITCH = 0,
 	SWITCH_USB_Port,
