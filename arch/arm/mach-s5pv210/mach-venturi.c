@@ -170,18 +170,184 @@ static struct s3c_adc_mach_info s3c_adc_platform __initdata = {
 };
 
 /* I2C0 */
+#ifdef CONFIG_S3C_DEV_I2C0
 static struct i2c_board_info i2c_devs0[] __initdata = {
 };
+#endif
 
 /* I2C1 */
+#ifdef CONFIG_S3C_DEV_I2C1
 static struct i2c_board_info i2c_devs1[] __initdata = {
+#ifdef CONFIG_VIDEO_TV20
 	{
 		I2C_BOARD_INFO("s5p_ddc", (0x74>>1)),
 	},
+#endif
 };
+#endif
 
 /* I2C2 */
+#ifdef CONFIG_S3C_DEV_I2C2
 static struct i2c_board_info i2c_devs2[] __initdata = {
+#ifdef CONFIG_TOUCHSCREEN_CYTMA340
+	{
+		I2C_BOARD_INFO("cytma340", 0x20),
+	},
+#endif
+};
+#endif
+
+/* I2C3 */
+static struct i2c_gpio_platform_data i2c3_platdata = {
+	.sda_pin		= GPIO_MSENSE_SDA_28V,
+	.scl_pin		= GPIO_MSENSE_SCL_28V,
+	.udelay			= 2, /* 250KHz */
+	.sda_is_open_drain	= 0,
+	.scl_is_open_drain	= 0,
+	.scl_is_output_only	= 0,
+};
+
+static struct platform_device venturi_device_i2c3 = {
+	.name			= "i2c-gpio",
+	.id			= 3,
+	.dev.platform_data	= &i2c3_platdata,
+};
+
+static struct i2c_board_info i2c_devs3[] __initdata = {
+#ifdef CONFIG_SENSORS_MMC328X
+	{
+		I2C_BOARD_INFO(MMC328X_I2C_NAME, MMC328X_I2C_ADDR),
+	},
+#endif
+};
+
+/* I2C4 */
+static struct i2c_gpio_platform_data i2c4_platdata = {
+	.sda_pin		= GPIO_AP_SDA_18V,
+	.scl_pin		= GPIO_AP_SCL_18V,
+	.udelay			= 2, /* 250KHz */
+	.sda_is_open_drain	= 0,
+	.scl_is_open_drain	= 0,
+	.scl_is_output_only	= 0,
+};
+
+static struct platform_device venturi_device_i2c4 = {
+	.name			= "i2c-gpio",
+	.id			= 4,
+	.dev.platform_data	= &i2c4_platdata,
+};
+
+static struct i2c_board_info i2c_devs4[] __initdata = {
+#ifdef CONFIG_SND_SMDKC110_MC1N2
+	{
+		I2C_BOARD_INFO("mc1n2", 0x3A),
+	},
+#endif
+};
+
+/* I2C5 */
+static struct i2c_gpio_platform_data i2c5_platdata = {
+	.sda_pin		= GPIO_AP_SDA_28V,
+	.scl_pin		= GPIO_AP_SCL_28V,
+	.udelay			= 2, /* 250KHz */
+	.sda_is_open_drain	= 0,
+	.scl_is_open_drain	= 0,
+	.scl_is_output_only	= 0,
+};
+
+static struct platform_device venturi_device_i2c5 = {
+	.name			= "i2c-gpio",
+	.id			= 5,
+	.dev.platform_data	= &i2c5_platdata,
+};
+
+static struct i2c_board_info i2c_devs5[] __initdata = {
+#ifdef CONFIG_SENSORS_BMA222
+	{
+		/* [HSS]  0X18 => 0X08 (2010.09.29) */
+		I2C_BOARD_INFO("bma222",0x08),
+	},
+#endif
+};
+
+/* I2C6 */
+static struct i2c_gpio_platform_data i2c6_platdata = {
+	.sda_pin		= GPIO_AP_PMIC_SDA,
+	.scl_pin		= GPIO_AP_PMIC_SCL,
+	.udelay 		= 2, /* 250KHz */
+	.sda_is_open_drain	= 0,
+	.scl_is_open_drain	= 0,
+	.scl_is_output_only	= 0,
+};
+
+static struct platform_device venturi_device_i2c6 = {
+	.name			= "i2c-gpio",
+	.id			= 6,
+	.dev.platform_data	= &i2c6_platdata,
+};
+
+static struct i2c_board_info i2c_devs6[] __initdata = {
+#ifdef CONFIG_REGULATOR_MAX8998
+	{
+		/* The address is 0xCC used since SRAD = 0 */
+		I2C_BOARD_INFO("max8998", (0xCC >> 1)),
+		.platform_data	= &max8998_pdata,
+		.irq		= IRQ_EINT7,
+	}, {
+		I2C_BOARD_INFO("rtc_max8998", (0x0D >> 1)),
+	},
+#endif
+};
+
+/* I2C7 */
+static struct i2c_gpio_platform_data i2c7_platdata = {
+	.sda_pin		= GPIO_USB_SDA_28V,
+	.scl_pin		= GPIO_USB_SCL_28V,
+	.udelay 		= 2, /* 250KHz */
+	.sda_is_open_drain	= 0,
+	.scl_is_open_drain	= 0,
+	.scl_is_output_only	= 0,
+};
+
+static struct platform_device venturi_device_i2c7 = {
+	.name			= "i2c-gpio",
+	.id			= 7,
+	.dev.platform_data	= &i2c7_platdata,
+};
+
+static struct i2c_board_info i2c_devs7[] __initdata = {
+#ifdef CONFIG_USB_SWITCH_FSA9480
+	{
+		I2C_BOARD_INFO("fsa9480", 0x4A >> 1),
+		.platform_data = &fsa9480_pdata,
+		.irq = IRQ_EINT(23),
+	},
+#endif
+};
+
+/* I2C8 */
+static struct i2c_gpio_platform_data i2c8_platdata = {
+	.sda_pin		= GPIO_FM_SDA_28V,
+	.scl_pin		= GPIO_FM_SCL_28V,
+	.udelay 		= 2, /* 250KHz */
+	.sda_is_open_drain	= 0,
+	.scl_is_open_drain	= 0,
+	.scl_is_output_only	= 0,
+};
+
+static struct platform_device venturi_device_i2c8 = {
+	.name			= "i2c-gpio",
+	.id			= 8,
+	.dev.platform_data	= &i2c8_platdata,
+};
+
+static struct i2c_board_info i2c_devs8[] __initdata = {
+#ifdef CONFIG_SAMSUNG_FM_SI4709
+	{
+		I2C_BOARD_INFO("Si4709", 0x20 >> 1),
+		.irq = (IRQ_EINT_GROUP20_BASE + 4), /* J2_4 */
+	},
+#endif
 };
 
 /* RAM Console */
@@ -478,6 +644,12 @@ static struct platform_device *venturi_devices[] __initdata = {
 #endif
 	&s5pv210_device_iis0,
 	&s5pv210_device_pcm1,
+	&venturi_device_i2c3,
+	&venturi_device_i2c4,
+	&venturi_device_i2c5,
+	&venturi_device_i2c6,
+	&venturi_device_i2c7,
+	&venturi_device_i2c8,
 	&venturi_device_keypad,
 	&watchdog_device,
 };
@@ -537,6 +709,12 @@ static void __init venturi_machine_init(void)
 	s3c_i2c2_set_platdata(NULL);
 	i2c_register_board_info(2, i2c_devs2, ARRAY_SIZE(i2c_devs2));
 #endif
+	i2c_register_board_info(3, i2c_devs3, ARRAY_SIZE(i2c_devs3));
+	i2c_register_board_info(4, i2c_devs4, ARRAY_SIZE(i2c_devs4));
+	i2c_register_board_info(5, i2c_devs5, ARRAY_SIZE(i2c_devs5));
+	i2c_register_board_info(6, i2c_devs6, ARRAY_SIZE(i2c_devs6));
+	i2c_register_board_info(7, i2c_devs7, ARRAY_SIZE(i2c_devs7));
+	i2c_register_board_info(8, i2c_devs8, ARRAY_SIZE(i2c_devs8));
 
 	/* ADC */
 #if defined(CONFIG_S5P_ADC)
