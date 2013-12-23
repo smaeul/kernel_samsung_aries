@@ -13,6 +13,7 @@
 
 #include <linux/clk.h>
 #include <linux/delay.h>
+#include <linux/fsa9480.h>
 #include <linux/gpio.h>
 #include <linux/gpio_event.h>
 #include <linux/i2c.h>
@@ -20,6 +21,7 @@
 #include <linux/io.h>
 #include <linux/module.h>
 #include <linux/usb/ch9.h>
+#include <linux/usb/gadget.h>
 
 #include <mach/adc.h>
 #include <mach/cpu-freq-v210.h>
@@ -168,6 +170,32 @@ static struct s3c_adc_mach_info s3c_adc_platform __initdata = {
 	.presc		= 65,
 	.resolution	= 12,
 };
+
+/* FSA9480 USB Switch */
+#ifdef CONFIG_USB_SWITCH_FSA9480
+static void fsa9480_cfg_gpio(void)
+{
+	s3c_gpio_cfgpin(GPIO_UART_SEL, S3C_GPIO_OUTPUT);
+	s3c_gpio_setpull(GPIO_UART_SEL, S3C_GPIO_PULL_NONE);
+}
+
+static void fsa9480_usb_cb(bool attached)
+{
+	struct usb_gadget *gadget = platform_get_drvdata(&s3c_device_usbgadget);
+
+	if (gadget) {
+		if (attached)
+			usb_gadget_vbus_connect(gadget);
+		else
+			usb_gadget_vbus_disconnect(gadget);
+	}
+}
+
+static struct fsa9480_platform_data fsa9480_pdata = {
+	.cfg_gpio		= fsa9480_cfg_gpio,
+	.usb_cb			= fsa9480_usb_cb,
+};
+#endif
 
 /* I2C0 */
 static struct i2c_board_info i2c_devs0[] __initdata = {
