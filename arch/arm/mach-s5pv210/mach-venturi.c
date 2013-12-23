@@ -153,7 +153,7 @@ static struct gpio_event_platform_data venturi_input_data = {
 	.info_count = ARRAY_SIZE(venturi_input_info),
 };
 
-static struct platform_device venturi_input_device = {
+static struct platform_device venturi_device_keypad = {
 	.name = GPIO_EVENT_DEV_NAME,
 	.id = 0,
 	.dev = {
@@ -478,7 +478,7 @@ static struct platform_device *venturi_devices[] __initdata = {
 #endif
 	&s5pv210_device_iis0,
 	&s5pv210_device_pcm1,
-	&venturi_input_device,
+	&venturi_device_keypad,
 	&watchdog_device,
 };
 
