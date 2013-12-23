@@ -180,7 +180,7 @@ static struct i2c_board_info i2c_devs0[] __initdata = {
 static struct i2c_board_info i2c_devs1[] __initdata = {
 #ifdef CONFIG_VIDEO_TV20
 	{
-		I2C_BOARD_INFO("s5p_ddc", (0x74>>1)),
+		I2C_BOARD_INFO("s5p_ddc", 0x3A),
 	},
 #endif
 };
@@ -216,7 +216,7 @@ static struct platform_device venturi_device_i2c3 = {
 static struct i2c_board_info i2c_devs3[] __initdata = {
 #ifdef CONFIG_SENSORS_MMC328X
 	{
-		I2C_BOARD_INFO(MMC328X_I2C_NAME, MMC328X_I2C_ADDR),
+		I2C_BOARD_INFO("mmc328x", 0x30),
 	},
 #endif
 };
@@ -264,8 +264,7 @@ static struct platform_device venturi_device_i2c5 = {
 static struct i2c_board_info i2c_devs5[] __initdata = {
 #ifdef CONFIG_SENSORS_BMA222
 	{
-		/* [HSS]  0X18 => 0X08 (2010.09.29) */
-		I2C_BOARD_INFO("bma222",0x08),
+		I2C_BOARD_INFO("bma222", 0x08),
 	},
 #endif
 };
@@ -289,12 +288,11 @@ static struct platform_device venturi_device_i2c6 = {
 static struct i2c_board_info i2c_devs6[] __initdata = {
 #ifdef CONFIG_REGULATOR_MAX8998
 	{
-		/* The address is 0xCC used since SRAD = 0 */
-		I2C_BOARD_INFO("max8998", (0xCC >> 1)),
+		I2C_BOARD_INFO("max8998", 0x66),
 		.platform_data	= &max8998_pdata,
 		.irq		= IRQ_EINT7,
 	}, {
-		I2C_BOARD_INFO("rtc_max8998", (0x0D >> 1)),
+		I2C_BOARD_INFO("rtc_max8998", 0x06),
 	},
 #endif
 };
@@ -318,9 +316,9 @@ static struct platform_device venturi_device_i2c7 = {
 static struct i2c_board_info i2c_devs7[] __initdata = {
 #ifdef CONFIG_USB_SWITCH_FSA9480
 	{
-		I2C_BOARD_INFO("fsa9480", 0x4A >> 1),
-		.platform_data = &fsa9480_pdata,
-		.irq = IRQ_EINT(23),
+		I2C_BOARD_INFO("fsa9480", 0x25),
+		.platform_data	= &fsa9480_pdata,
+		.irq		= IRQ_EINT(23),
 	},
 #endif
 };
@@ -344,8 +342,8 @@ static struct platform_device venturi_device_i2c8 = {
 static struct i2c_board_info i2c_devs8[] __initdata = {
 #ifdef CONFIG_SAMSUNG_FM_SI4709
 	{
-		I2C_BOARD_INFO("Si4709", 0x20 >> 1),
-		.irq = (IRQ_EINT_GROUP20_BASE + 4), /* J2_4 */
+		I2C_BOARD_INFO("Si4709", 0x10),
+		.irq		= (IRQ_EINT_GROUP20_BASE + 4), /* J2_4 */
 	},
 #endif
 };
