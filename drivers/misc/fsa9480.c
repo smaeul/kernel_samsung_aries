@@ -243,10 +243,13 @@ static const struct attribute_group fsa9480_group = {
 
 static int cardock_enable = 0;
 static int deskdock_enable = 0;
+int cardock_status = 0;
+int deskdock_status = 0;
 
+#if defined(CONFIG_SAMSUNG_CAPTIVATE) || defined(CONFIG_SAMSUNG_FASCINATE)
 static ssize_t cardock_enable_show(struct device *dev,
 				    struct device_attribute *attr,
-				    const char *buf)
+				    char *buf)
 {
 	return sprintf(buf, "%d\n", cardock_enable);
 }
@@ -260,7 +263,7 @@ static ssize_t cardock_enable_set(struct device *dev,
 
 static ssize_t deskdock_enable_show(struct device *dev,
 				    struct device_attribute *attr,
-				    const char *buf)
+				    char *buf)
 {
 	return sprintf(buf, "%d\n", deskdock_enable);
 }
@@ -278,8 +281,8 @@ static DEVICE_ATTR(deskdock_enable, S_IRUGO | S_IWUGO,
 		deskdock_enable_show, deskdock_enable_set);
 
 static struct attribute *dockaudio_attributes[] = {
-	&dev_attr_cardock_enable,
-	&dev_attr_deskdock_enable,
+	&dev_attr_cardock_enable.attr,
+	&dev_attr_deskdock_enable.attr,
 	NULL
 };
 
@@ -291,9 +294,7 @@ static struct miscdevice dockaudio_device = {
 	.minor = MISC_DYNAMIC_MINOR,
 	.name = "dockaudio",
 };
-
-int cardock_status = 0;
-int deskdock_status = 0;
+#endif
 
 #if defined(CONFIG_MACH_P1) || defined(CONFIG_MACH_VENTURI)
 void fsa9480_manual_switching(int path)
