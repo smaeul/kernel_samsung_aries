@@ -20,6 +20,8 @@
 #include <linux/i2c-gpio.h>
 #include <linux/io.h>
 #include <linux/module.h>
+#include <linux/spi/spi.h>
+#include <linux/spi/spi_gpio.h>
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
 
@@ -33,6 +35,7 @@
 
 #include <plat/cpu.h>
 #include <plat/devs.h>
+#include <plat/fb.h>
 #include <plat/iic.h>
 #include <plat/media.h>
 #include <plat/mfc.h>
@@ -374,6 +377,38 @@ static struct i2c_board_info i2c_devs8[] __initdata = {
 #endif
 };
 
+/* SPI */
+#define LCD_BUS_NUM 3
+
+static struct spi_gpio_platform_data spi_gpio_platdata = {
+	.sck		= GPIO_DISPLAY_CLK,
+	.mosi		= GPIO_DISPLAY_SI,
+	.miso		= 0,
+	.num_chipselect	= 2,
+};
+
+static struct platform_device venturi_device_spi_gpio = {
+	.name		= "spi_gpio",
+	.id		= LCD_BUS_NUM,
+	.dev		= {
+		.parent		= &s3c_device_fb.dev,
+		.platform_data	= &spi_gpio_platdata,
+	},
+};
+
+static struct spi_board_info spi_gpio_board_info[] __initdata = {
+#ifdef CONFIG_FB_S3C_HX8369
+	{
+		.modalias	= "hx8369",
+		.max_speed_hz	= 1200000,
+		.bus_num	= LCD_BUS_NUM,
+		.chip_select	= 0,
+		.mode		= SPI_MODE_3,
+		.controller_data = (void *)GPIO_DISPLAY_CS,
+	},
+#endif
+};
+
 /* RAM Console */
 static unsigned int ram_console_start;
 static unsigned int ram_console_size;
@@ -619,6 +654,7 @@ static struct platform_device *venturi_devices[] __initdata = {
 	&s3c_device_rndis,
 #endif
 #endif
+	&s3c_device_fb,
 	&s3c_device_g3d,
 #ifdef CONFIG_S3C_DEV_HSMMC
 	&s3c_device_hsmmc0,
@@ -673,6 +709,7 @@ static struct platform_device *venturi_devices[] __initdata = {
 	&venturi_device_i2c7,
 	&venturi_device_i2c8,
 	&venturi_device_keypad,
+	&venturi_device_spi_gpio,
 	&watchdog_device,
 };
 
@@ -735,6 +772,9 @@ static void __init venturi_machine_init(void)
 	i2c_register_board_info(6, i2c_devs6, ARRAY_SIZE(i2c_devs6));
 	i2c_register_board_info(7, i2c_devs7, ARRAY_SIZE(i2c_devs7));
 	i2c_register_board_info(8, i2c_devs8, ARRAY_SIZE(i2c_devs8));
+
+	/* SPI */
+	spi_register_board_info(spi_gpio_board_info, ARRAY_SIZE(spi_gpio_board_info));
 
 	/* ADC */
 #if defined(CONFIG_S5P_ADC)
