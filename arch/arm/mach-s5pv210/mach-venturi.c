@@ -97,8 +97,15 @@ static struct s3c2410_uartcfg venturi_uartcfgs[] __initdata = {
 };
 
 /* Reserved memory for media devices */
+#define S5PV210_VIDEO_SAMSUNG_MEMSIZE_FIMC0 (12 * SZ_1M)
+#define S5PV210_VIDEO_SAMSUNG_MEMSIZE_FIMC1 (10 * SZ_1M)
+#define S5PV210_VIDEO_SAMSUNG_MEMSIZE_FIMC2 (12 * SZ_1M)
+#define S5PV210_VIDEO_SAMSUNG_MEMSIZE_FIMD (480 * 800 * 4 * (CONFIG_FB_S3C_NR_BUFFERS + \
+						(CONFIG_FB_S3C_NUM_OVLY_WIN * CONFIG_FB_S3C_NUM_BUF_OVLY_WIN)))
+#define S5PV210_VIDEO_SAMSUNG_MEMSIZE_JPEG (4 * SZ_1M)
 #define S5PV210_VIDEO_SAMSUNG_MEMSIZE_MFC0 (14 * SZ_1M)
 #define S5PV210_VIDEO_SAMSUNG_MEMSIZE_MFC1 (21 * SZ_1M)
+#define S5PV210_VIDEO_SAMSUNG_MEMSIZE_TEXTSTREAM (3 * SZ_1M)
 
 static struct s5p_media_device venturi_media_devs[] = {
 	[0] = {
@@ -113,6 +120,48 @@ static struct s5p_media_device venturi_media_devs[] = {
 		.name = "mfc",
 		.bank = 1,
 		.memsize = S5PV210_VIDEO_SAMSUNG_MEMSIZE_MFC1,
+		.paddr = 0,
+	},
+	[2] = {
+		.id = S5P_MDEV_FIMC0,
+		.name = "fimc0",
+		.bank = 1,
+		.memsize = S5PV210_VIDEO_SAMSUNG_MEMSIZE_FIMC0,
+		.paddr = 0,
+	},
+	[3] = {
+		.id = S5P_MDEV_FIMC1,
+		.name = "fimc1",
+		.bank = 1,
+		.memsize = S5PV210_VIDEO_SAMSUNG_MEMSIZE_FIMC1,
+		.paddr = 0,
+	},
+	[4] = {
+		.id = S5P_MDEV_FIMC2,
+		.name = "fimc2",
+		.bank = 1,
+		.memsize = S5PV210_VIDEO_SAMSUNG_MEMSIZE_FIMC2,
+		.paddr = 0,
+	},
+	[5] = {
+		.id = S5P_MDEV_JPEG,
+		.name = "jpeg",
+		.bank = 0,
+		.memsize = S5PV210_VIDEO_SAMSUNG_MEMSIZE_JPEG,
+		.paddr = 0,
+	},
+	[6] = {
+		.id = S5P_MDEV_FIMD,
+		.name = "fimd",
+		.bank = 1,
+		.memsize = S5PV210_VIDEO_SAMSUNG_MEMSIZE_FIMD,
+		.paddr = 0,
+	},
+	[7] = {
+		.id = S5P_MDEV_TEXSTREAM,
+		.name = "s3c_bc",
+		.bank = 1,
+		.memsize = S5PV210_VIDEO_SAMSUNG_MEMSIZE_TEXTSTREAM,
 		.paddr = 0,
 	},
 };
