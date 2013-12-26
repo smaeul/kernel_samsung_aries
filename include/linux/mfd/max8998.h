@@ -63,7 +63,7 @@ struct max8998_regulator_data {
 	int				id;
 	struct regulator_init_data	*initdata;
 };
-#ifdef CONFIG_MACH_ARIES
+#if defined(CONFIG_MACH_ARIES) || defined(CONFIG_MACH_VENTURI)
 enum cable_type_t {
 	CABLE_TYPE_NONE = 0,
 	CABLE_TYPE_USB,
@@ -93,7 +93,7 @@ struct max8998_charger_callbacks {
  * @adc_table: adc_table must be ascending adc value order
  */
 struct max8998_charger_data {
-#ifdef CONFIG_MACH_ARIES
+#if defined(CONFIG_MACH_ARIES) || defined(CONFIG_MACH_VENTURI)
 	struct power_supply *psy_fuelgauge;
 	void (*register_callbacks)(struct max8998_charger_callbacks *ptr);
 	struct max8998_adc_table_data *adc_table;
@@ -134,7 +134,7 @@ struct max8998_platform_data {
 	int				num_regulators;
 	int				irq_base;
 	int				ono;
-#ifdef CONFIG_MACH_ARIES
+#if defined(CONFIG_MACH_ARIES) || defined(CONFIG_MACH_VENTURI)
 	bool				buck_voltage_lock;
 	int				buck1_voltage1;
 	int				buck1_voltage2;
