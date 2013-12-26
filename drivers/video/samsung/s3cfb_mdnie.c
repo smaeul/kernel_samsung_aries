@@ -84,23 +84,6 @@ typedef struct {
 	u16 data;
 } mDNIe_data_type;
 
-typedef enum
-{
-	mDNIe_UI_MODE,
-	mDNIe_VIDEO_MODE,
-	mDNIe_VIDEO_WARM_MODE,
-	mDNIe_VIDEO_COLD_MODE,
-	mDNIe_CAMERA_MODE,
-	mDNIe_NAVI,
-#ifdef CONFIG_MACH_ARIES
-	mDNIe_BYPASS_MODE,
-#else // CONFIG_MACH_P1
-	mDNIe_DMB_MODE,
-	mDNIe_VT_MODE,
-	mDNIe_GALLERY_MODE,
-#endif
-}Lcd_mDNIe_UI;
-
 struct class *mdnieset_ui_class;
 struct device *switch_mdnieset_ui_dev;
 struct class *mdnieset_outdoor_class;
@@ -127,6 +110,14 @@ mDNIe_data_type mDNIe_Video[]=
 	{0x00C4, 0x7200},
 	{0x00C8, 0x008d},
 	{0x00D0, 0x0100},
+#elif defined(CONFIG_MACH_VENTURI)
+	{0x0084, 0x0000}, //algorithm selection
+	{0x0090, 0x0000}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x005c}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x0064}, //de th.
 #endif
 	{END_SEQ, 0x0000},
 };
@@ -145,6 +136,14 @@ mDNIe_data_type mDNIe_Camera[]=
 	{0x00C4, 0x7200},
 	{0x00C8, 0x008D},
 	{0x00D0, 0x00C0},
+#elif defined(CONFIG_MACH_VENTURI)
+	{0x0084, 0x0000}, //algorithm selection + mcm
+	{0x0090, 0x0000}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x005c}, //simplicity th.
+	{0x009c, 0x0010}, //de 0, ce off
+	{0x00ac, 0x0100}, //skin detect off, cs 256
+	{0x00b4, 0x03ff}, //de th.
 #endif
 	{END_SEQ, 0x0000},
 };
@@ -162,6 +161,15 @@ mDNIe_data_type mDNIe_Camera_Outdoor_Mode[]=
 	{0x0100, 0x6050},
 	{0x0198, 0x0001},
 	{0x0194, 0x0011},
+#elif defined(CONFIG_MACH_VENTURI)
+	{0x0084, 0x0080}, //algorithm selection + ove
+	{0x0090, 0x0000}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x005c}, //simplicity th.
+	{0x009c, 0x0010}, //de 0, ce off
+	{0x00ac, 0x0100}, //skin detect off, cs 256
+	{0x00b4, 0x03ff}, //de th.
+	{0x0100, 0x5040}, //ove
 #endif
 	{END_SEQ, 0x0000},
 };
@@ -195,6 +203,14 @@ mDNIe_data_type mDNIe_UI[]=
 	{0x00C8, 0x008D},
 	{0x00D0, 0x00C0},
 	{0x0100, 0x0000},
+#elif defined(CONFIG_MACH_VENTURI)
+	{0x0084, 0x0000}, //algorithm selection
+	{0x0090, 0x0000}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x005c}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x00e0}, //de th.
 #else // CONFIG_MACH_P1 //Bypass
 	{0x0084, 0x0000}, // HDTR
 	{0x0090, 0x0000}, // DeConTh off
@@ -220,6 +236,17 @@ mDNIe_data_type mDNIe_Video_Warm[]=
 	{0x0120, 0x0028},
 	{0x0138, 0x7600},
 	{0x0140, 0x0090},
+#elif defined(CONFIG_MACH_VENTURI)
+	{0x0084, 0x0020}, //algorithm selection
+	{0x0090, 0x0000}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x005c}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x0064}, //de th.
+	{0x0120, 0x0064}, //MCM K
+	{0x0140, 0x7000}, //cb 0
+	{0x0148, 0x0090}, //cr 0
 #endif
 	{END_SEQ, 0x0000},
 
@@ -238,6 +265,18 @@ mDNIe_data_type mDNIe_Video_WO_Mode[]=
 	{0x0100, 0x6050},
 	{0x0198, 0x0001},
 	{0x0194, 0x0011},
+#elif defined(CONFIG_MACH_VENTURI)
+	{0x0084, 0x00a0}, //algorithm selection
+	{0x0090, 0x0000}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x005c}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x0064}, //de th.
+	{0x0120, 0x0064}, //MCM K
+	{0x0140, 0x7000}, //cb 0
+	{0x0148, 0x0090}, //cr 0
+	{0x0100, 0x5050}, //ove
 #endif
 	{END_SEQ, 0x0000},
 };
@@ -255,6 +294,17 @@ mDNIe_data_type mDNIe_Video_Cold[]=
 	{0x0120, 0x0064},
 	{0x0140, 0x9400},
 	{0x0148, 0x006D},
+#elif defined(CONFIG_MACH_VENTURI)
+	{0x0084, 0x0020}, //algorithm selection
+	{0x0090, 0x0000}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x005c}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x0064}, //de th.
+	{0x0120, 0x0064}, //MCM K
+	{0x0140, 0x9600}, //cb 0
+	{0x0148, 0x006a}, //cr 0
 #endif
 	{END_SEQ, 0x0000},
 };
@@ -272,6 +322,18 @@ mDNIe_data_type mDNIe_Video_CO_Mode[]=
 	{0x0100, 0x6050},
 	{0x0198, 0x0001},
 	{0x0194, 0x0011},
+#elif defined(CONFIG_MACH_VENTURI)
+	{0x0084, 0x00a0}, //algorithm selection
+	{0x0090, 0x0000}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x005c}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x0064}, //de th.
+	{0x0120, 0x0064}, //MCM K
+	{0x0140, 0x9600}, //cb 0
+	{0x0148, 0x006a}, //cr 0
+	{0x0100, 0x5050}, //ove
 #endif
 	{END_SEQ, 0x0000},
 };
@@ -289,15 +351,155 @@ mDNIe_data_type mDNIe_Outdoor_Mode[]=
 	{0x0100, 0x6050},
 	{0x0198, 0x0001},
 	{0x0194, 0x0011},
+#elif defined(CONFIG_MACH_VENTURI)
+	{0x0100, 0x0000}, //Set first
+	{0x0084, 0x0080}, //algorithm selection + ove
+	{0x0090, 0x0000}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x005c}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x00e0}, //de th.
+	{0x0100, 0x5050}, //ove
 #endif
 	{END_SEQ, 0x0000},
 };
+
+#ifdef CONFIG_MACH_VENTURI
+mDNIe_data_type mDNIe_Gallery[]=
+{
+	{0x0084, 0x0000}, //algorithm selection
+	{0x0090, 0x0000}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x005c}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x00e0}, //de th.
+	{END_SEQ, 0x0000},
+};
+
+mDNIe_data_type mDNIe_VT_Mode[]=
+{
+	{0x0084, 0x0040}, //algorithm selection
+	{0x0090, 0x0000}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x005c}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x0020}, //de th.
+	{0x00c0, 0x0400}, //PCC skin
+	{0x00c4, 0x7a00}, //cb
+	{0x00c8, 0x008f}, //cr
+	{0x00d0, 0x0100}, //strength 4
+	{END_SEQ, 0x0000},
+};
+
+
+mDNIe_data_type mDNIe_DMB[]=
+{
+	{0x0084, 0x0000}, //algorithm selection
+	{0x0090, 0x0078}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x0046}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x0032}, //de th. 50
+	{0x00c0, 0x0400}, //PCC skin
+	{0x00c4, 0x7200}, //	 cb
+	{0x00c8, 0x008d}, //	 cr
+	{0x00d0, 0x0080}, //	 strength. 3
+	{END_SEQ, 0x0000}
+};
+
+
+mDNIe_data_type mDNIe_DMB_Warm[]=
+{
+	{0x0084, 0x0020}, //algorithm selection
+	{0x0090, 0x0078}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x0046}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x0032}, //de th.50
+	{0x0120, 0x0064}, //MCM K
+	{0x0140, 0x7000}, //cb 0
+	{0x0148, 0x0090}, //cr 0
+	{END_SEQ, 0x0000}
+};
+
+mDNIe_data_type mDNIe_DMB_WO_Mode[]=
+{
+	{0x0084, 0x00a0}, //algorithm selection
+	{0x0090, 0x0078}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x0046}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x0032}, //de th.
+	{0x0120, 0x0064}, //MCM K
+	{0x0140, 0x7000}, //cb 0
+	{0x0148, 0x0090}, //cr 0
+	{0x0100, 0x5050}, //ove
+	{END_SEQ, 0x0000},
+};
+
+
+mDNIe_data_type mDNIe_DMB_Cold[]=
+{
+	{0x0084, 0x0020}, //algorithm selection
+	{0x0090, 0x0078}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x0046}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x0032}, //de th.
+	{0x0120, 0x0064}, //MCM K
+	{0x0140, 0x9600}, //cb 0
+	{0x0148, 0x006a}, //cr 0
+	{END_SEQ, 0x0000},
+};
+
+mDNIe_data_type mDNIe_DMB_CO_Mode[]=
+{
+	{0x0084, 0x00a0}, //algorithm selection
+	{0x0090, 0x0078}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x0046}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 320
+	{0x00b4, 0x0032}, //de th.
+	{0x0120, 0x0064}, //MCM K
+	{0x0140, 0x9600}, //cb 0
+	{0x0148, 0x006a}, //cr 0
+	{0x0100, 0x5050}, //ove
+	{END_SEQ, 0x0000},
+};
+
+
+mDNIe_data_type mDNIe_DMB_Outdoor_Mode[]=
+{
+	{0x0084, 0x0080}, //algorithm selection
+	{0x0090, 0x0078}, //decontour th.
+	{0x0094, 0x0fff}, //directional th.
+	{0x0098, 0x0046}, //simplicity th.
+	{0x009c, 0x0ff0}, //de 127, ce off
+	{0x00ac, 0x0200}, //skin detect off, cs 512
+	{0x00b4, 0x0032}, //de th.
+	{0x00c0, 0x0400}, //PCC skin
+	{0x00c4, 0x7200}, //	 cb
+	{0x00c8, 0x008d}, //	 cr
+	{0x00d0, 0x0080}, //	 strength. 3
+	{0x0100, 0x5050}, //ove
+	{END_SEQ, 0x0000},
+};
+#endif
 
 #ifdef CONFIG_MACH_ARIES
 Lcd_mDNIe_UI current_mDNIe_UI = mDNIe_BYPASS_MODE; // mDNIe Set Status Checking Value.
 #else
 Lcd_mDNIe_UI current_mDNIe_UI = mDNIe_UI_MODE; // mDNIe Set Status Checking Value.
 #endif
+
 u8 current_mDNIe_OutDoor_OnOff = FALSE;
 
 int mDNIe_Tuning_Mode = FALSE;
@@ -637,7 +839,28 @@ void mDNIe_Set_Mode(Lcd_mDNIe_UI mode, u8 mDNIe_Outdoor_OnOff)
 #ifdef CONFIG_MACH_ARIES
 			case mDNIe_BYPASS_MODE:
 				mDNIe_Mode_Change(mDNIe_Bypass);
+			break;
+#else
+#ifdef CONFIG_MACH_VENTURI
+			case mDNIe_DMB_MODE:
+				mDNIe_Mode_Change(mDNIe_Outdoor_Mode);
+			break;
 
+			case mDNIe_DMB_WARM_MODE:
+				mDNIe_Mode_Change(mDNIe_DMB_WO_Mode);
+			break;
+
+			case mDNIe_DMB_COLD_MODE:
+				mDNIe_Mode_Change(mDNIe_DMB_CO_Mode);
+			break;
+
+			case mDNIe_GALLERY:
+				mDNIe_Mode_Change(mDNIe_Gallery);
+			break;
+
+			case mDNIe_VT_MODE:
+				mDNIe_Mode_Change(mDNIe_VT_Mode);
+			break;
 #else // CONFIG_MACH_P1
 			case mDNIe_DMB_MODE:
 				mDNIe_Mode_Change(mDNIe_None);
@@ -646,8 +869,9 @@ void mDNIe_Set_Mode(Lcd_mDNIe_UI mode, u8 mDNIe_Outdoor_OnOff)
 			case mDNIe_VT_MODE:
 			case mDNIe_GALLERY_MODE:
 				mDNIe_Mode_Change(mDNIe_None);
-#endif
 			break;
+#endif
+#endif
 		}
 
 		current_mDNIe_UI = mode;
@@ -689,7 +913,27 @@ void mDNIe_Set_Mode(Lcd_mDNIe_UI mode, u8 mDNIe_Outdoor_OnOff)
 			case mDNIe_BYPASS_MODE:
 				mDNIe_Mode_Change(mDNIe_Bypass);
 			break;
+#else
+#ifdef CONFIG_MACH_VENTURI
+			case mDNIe_DMB_MODE:
+				mDNIe_Mode_Change(mDNIe_Outdoor_Mode);
+			break;
 
+			case mDNIe_DMB_WARM_MODE:
+				mDNIe_Mode_Change(mDNIe_DMB_WO_Mode);
+			break;
+
+			case mDNIe_DMB_COLD_MODE:
+				mDNIe_Mode_Change(mDNIe_DMB_CO_Mode);
+			break;
+
+			case mDNIe_GALLERY:
+				mDNIe_Mode_Change(mDNIe_Gallery);
+			break;
+
+			case mDNIe_VT_MODE:
+				mDNIe_Mode_Change(mDNIe_VT_Mode);
+			break;
 #else // CONFIG_MACH_P1
 			case mDNIe_DMB_MODE:
 				mDNIe_Mode_Change(mDNIe_None);
@@ -700,7 +944,7 @@ void mDNIe_Set_Mode(Lcd_mDNIe_UI mode, u8 mDNIe_Outdoor_OnOff)
 				mDNIe_Mode_Change(mDNIe_None);
 			break;
 #endif
-
+#endif
 		}
 
 		current_mDNIe_UI = mode;
@@ -719,9 +963,9 @@ EXPORT_SYMBOL(mDNIe_Mode_Set);
 static ssize_t mdnieset_ui_file_cmd_show(struct device *dev,
         struct device_attribute *attr, char *buf)
 {
-	printk("called %s \n",__func__);
-
 	int mdnie_ui = 0;
+
+	printk("called %s \n",__func__);
 
 	switch(current_mDNIe_UI)
 	{
@@ -753,11 +997,27 @@ static ssize_t mdnieset_ui_file_cmd_show(struct device *dev,
 		case mDNIe_BYPASS_MODE:
 			mdnie_ui = 6;
 			break;
-#else // CONFIG_MACH_P1
+#else
 		case mDNIe_DMB_MODE:
 			mdnie_ui = 6;
 			break;
+#ifdef CONFIG_MACH_VENTURI
+		case mDNIe_DMB_WARM_MODE:
+			mdnie_ui = 7;
+			break;
 
+		case mDNIe_DMB_COLD_MODE:
+			mdnie_ui = 8;
+			break;
+
+		case mDNIe_GALLERY:
+			mdnie_ui = 9;
+			break;
+
+		case mDNIe_VT_MODE:
+			mdnie_ui = 10;
+			break;
+#else // CONFIG_MACH_P1
 		case mDNIe_VT_MODE:
 			mdnie_ui = 7;
 			break;
@@ -765,6 +1025,7 @@ static ssize_t mdnieset_ui_file_cmd_show(struct device *dev,
 		case mDNIe_GALLERY_MODE:
 			mdnie_ui = 8;
 			break;
+#endif
 #endif
 	}
 	return sprintf(buf,"%u\n",mdnie_ui);
@@ -808,11 +1069,27 @@ static ssize_t mdnieset_ui_file_cmd_store(struct device *dev,
 		case SIG_MDNIE_BYPASS_MODE:
 			current_mDNIe_UI = mDNIe_BYPASS_MODE;
 			break;
-#else // CONFIG_MACH_P1
+#else
 		case SIG_MDNIE_DMB_MODE:
 			current_mDNIe_UI = mDNIe_DMB_MODE;
 			break;
+#ifdef CONFIG_MACH_VENTURI
+		case SIG_MDNIE_DMB_WARM_MODE:
+			current_mDNIe_UI = mDNIe_DMB_WARM_MODE;
+			break;
 
+		case SIG_MDNIE_DMB_COLD_MODE:
+			current_mDNIe_UI = mDNIe_DMB_COLD_MODE;
+			break;
+
+		case SIG_MDNIE_GALLERY:
+			current_mDNIe_UI = mDNIe_GALLERY;
+			break;
+
+		case SIG_MDNIE_VT_MODE:
+			current_mDNIe_UI = mDNIe_VT_MODE;
+			break;
+#else // CONFIG_MACH_P1
 		case SIG_MDNIE_VT_MODE:
 			current_mDNIe_UI = mDNIe_VT_MODE;
 			break;
@@ -820,6 +1097,7 @@ static ssize_t mdnieset_ui_file_cmd_store(struct device *dev,
 		case SIG_MDNIE_GALLERY_MODE:
 			current_mDNIe_UI = mDNIe_GALLERY_MODE;
 			break;
+#endif
 #endif
 		default:
 			printk("\nmdnieset_ui_file_cmd_store value is wrong : value(%d)\n",value);

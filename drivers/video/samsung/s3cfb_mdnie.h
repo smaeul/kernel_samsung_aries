@@ -323,20 +323,52 @@
 
 
 
-#define SIG_MDNIE_UI_MODE					0
+#define SIG_MDNIE_UI_MODE				0
 #define SIG_MDNIE_VIDEO_MODE				1
 #define SIG_MDNIE_VIDEO_WARM_MODE			2
 #define SIG_MDNIE_VIDEO_COLD_MODE			3
 #define SIG_MDNIE_CAMERA_MODE				4
-#define SIG_MDNIE_NAVI						5
+#define SIG_MDNIE_NAVI					5
 #ifdef CONFIG_MACH_ARIES
-#define SIG_MDNIE_BYPASS_MODE				6
-#else // CONFIG_MACH_P1
-#define SIG_MDNIE_DMB_MODE					6
-#define SIG_MDNIE_VT_MODE					7
-#define SIG_MDNIE_GALLERY_MODE				8
+#	define SIG_MDNIE_BYPASS_MODE			6
+#else
+#	define SIG_MDNIE_DMB_MODE			6
+#	ifdef CONFIG_MACH_VENTURI
+#		define SIG_MDNIE_DMB_WARM_MODE		7
+#		define SIG_MDNIE_DMB_COLD_MODE		8
+#		define SIG_MDNIE_GALLERY		9
+#		define SIG_MDNIE_VT_MODE		10
+#	else // CONFIG_MACH_P1
+#		define SIG_MDNIE_VT_MODE		7
+#		define SIG_MDNIE_GALLERY_MODE		8
+#	endif
 #endif
 
+typedef enum
+{
+	mDNIe_UI_MODE,
+	mDNIe_VIDEO_MODE,
+	mDNIe_VIDEO_WARM_MODE,
+	mDNIe_VIDEO_COLD_MODE,
+	mDNIe_CAMERA_MODE,
+	mDNIe_NAVI,
+#ifdef CONFIG_MACH_ARIES
+	mDNIe_BYPASS_MODE,
+#else
+	mDNIe_DMB_MODE,
+#ifdef CONFIG_MACH_VENTURI
+	mDNIe_DMB_WARM_MODE,
+	mDNIe_DMB_COLD_MODE,
+	mDNIe_GALLERY,
+	mDNIe_VT_MODE,
+#else // CONFIG_MACH_P1
+	mDNIe_VT_MODE,
+	mDNIe_GALLERY_MODE,
+#endif
+#endif
+} Lcd_mDNIe_UI;
+
+struct s3cfb_global;
 
 int s3c_mdnie_init(void);
 int s3c_mdnie_enable(void);
@@ -352,5 +384,8 @@ int s3c_mdnie_start(struct s3cfb_global *ctrl);
 int s3c_mdnie_off(void);
 int s3c_mdnie_stop(void);
 extern void mDNIe_Mode_Set(void);
+
+extern Lcd_mDNIe_UI current_mDNIe_UI;
+extern void init_mdnie_class(void);
 
 #endif
