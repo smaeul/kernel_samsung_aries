@@ -205,7 +205,11 @@ int s3cfb_set_clock(struct s3cfb_global *ctrl)
 	}
 
 	div = src_clk / vclk;
+#ifdef CONFIG_MACH_VENTURI
+	if ((src_clk % vclk) > (vclk / 2))
+#else
 	if (src_clk % vclk)
+#endif
 		div++;
 
 	if ((src_clk/div) > maxclk)

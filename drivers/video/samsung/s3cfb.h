@@ -227,7 +227,7 @@ struct s3cfb_global {
 	struct device		*dev;
 	struct clk		*clock;
 	struct regulator	*regulator;
-#ifdef CONFIG_MACH_ARIES
+#if defined(CONFIG_MACH_ARIES) || defined(CONFIG_MACH_VENTURI)
 	struct regulator	*vcc_lcd;
 	struct regulator	*vlcd;
 #endif
@@ -371,9 +371,16 @@ extern void s3cfb_late_resume(struct early_suspend *h);
 extern void tl2796_ldi_init(void);
 extern void tl2796_ldi_enable(void);
 extern void tl2796_ldi_disable(void);
+#endif
+
+#if defined(CONFIG_FB_S3C_HX8369)
+extern void hx8369_ldi_init(void);
+extern void hx8369_ldi_enable(void);
+extern void hx8369_ldi_disable(void);
+#endif
+
 extern void lcd_cfg_gpio_early_suspend(void);
 extern void lcd_cfg_gpio_late_resume(void);
-#endif
 
 #if defined (CONFIG_FB_S3C_LVDS)
 void lms700_powerup(void);

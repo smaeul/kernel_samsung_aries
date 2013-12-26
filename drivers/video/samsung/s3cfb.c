@@ -1117,7 +1117,7 @@ static int __devinit s3cfb_probe(struct platform_device *pdev)
 		goto err_regulator;
 	}
 
-#ifdef CONFIG_MACH_ARIES
+#if defined(CONFIG_MACH_ARIES) || defined(CONFIG_MACH_VENTURI)
 	fbdev->vcc_lcd = regulator_get(&pdev->dev, "vcc_lcd");
 	if (!fbdev->vcc_lcd) {
 		dev_err(fbdev->dev, "failed to get vcc_lcd\n");
@@ -1277,7 +1277,7 @@ err_io:
 	pdata->clk_off(pdev, &fbdev->clock);
 
 err_pdata:
-#ifdef CONFIG_MACH_ARIES
+#if defined(CONFIG_MACH_ARIES) || defined(CONFIG_MACH_VENTURI)
 	regulator_disable(fbdev->vlcd);
 
 err_vlcd:
@@ -1369,10 +1369,10 @@ void s3cfb_early_suspend(struct early_suspend *h)
 	s3c_mdnie_off();
 #endif
 	clk_disable(fbdev->clock);
-#if defined(CONFIG_FB_S3C_TL2796)
+#if defined(CONFIG_FB_S3C_TL2796) || defined(CONFIG_FB_S3C_HX8369)
 	lcd_cfg_gpio_early_suspend();
 #endif
-#ifdef CONFIG_MACH_ARIES
+#if defined(CONFIG_MACH_ARIES) || defined(CONFIG_MACH_VENTURI)
 	regulator_disable(fbdev->vlcd);
 	regulator_disable(fbdev->vcc_lcd);
 #endif
@@ -1397,7 +1397,7 @@ void s3cfb_late_resume(struct early_suspend *h)
 	if (ret < 0)
 		dev_err(fbdev->dev, "failed to enable regulator\n");
 
-#ifdef CONFIG_MACH_ARIES
+#if defined(CONFIG_MACH_ARIES) || defined(CONFIG_MACH_VENTURI)
 	ret = regulator_enable(fbdev->vcc_lcd);
 	if (ret < 0)
 		dev_err(fbdev->dev, "failed to enable vcc_lcd\n");
@@ -1407,7 +1407,7 @@ void s3cfb_late_resume(struct early_suspend *h)
 		dev_err(fbdev->dev, "failed to enable vlcd\n");
 #endif
 
-#if defined(CONFIG_FB_S3C_TL2796)
+#if defined(CONFIG_FB_S3C_TL2796) || defined(CONFIG_FB_S3C_HX8369)
 	lcd_cfg_gpio_late_resume();
 #endif
 	dev_dbg(fbdev->dev, "wake up from suspend\n");
