@@ -55,6 +55,7 @@ obj-$(CONFIG_MACH_P1)		+= p1-sec_switch.o
 
 obj-$(CONFIG_MACH_VENTURI)	+= mach-venturi.o
 obj-$(CONFIG_MACH_VENTURI)	+= aries-watchdog.o
+obj-$(CONFIG_MACH_VENTURI)	+= venturi-panel.o
 
 # device support
 

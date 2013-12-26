@@ -16,6 +16,7 @@
 #include <linux/fsa9480.h>
 #include <linux/gpio.h>
 #include <linux/gpio_event.h>
+#include <linux/hx8369.h>
 #include <linux/i2c.h>
 #include <linux/i2c-gpio.h>
 #include <linux/io.h>
@@ -44,6 +45,8 @@
 #include <plat/regs-serial.h>
 #include <plat/s5pv210.h>
 #include <plat/sdhci.h>
+
+#include <../../../drivers/video/samsung/s3cfb.h>
 
 /* UARTs */
 /* Following are default values for UCON, ULCON and UFCON UART registers */
@@ -377,6 +380,68 @@ static struct i2c_board_info i2c_devs8[] __initdata = {
 #endif
 };
 
+/* HX8369 Panel */
+#ifdef CONFIG_FB_S3C_HX8369
+/*
+ *	Venturi LCD Spec
+ *	DotClk	= FrameRate x (HSW+HBP+XRES+HFP) x (VSW+VBP+800+VFP)
+ *		= 60 x (8+24+480+24) x (8+24+800+24) = 27,528,960 = 27.52MHz
+ */
+static struct s3cfb_lcd hx8369_lcd = {
+	.width 		= 480,
+	.height 	= 800,
+	.p_width 	= 52,		// Physical width in mm
+	.p_height 	= 86,		// Physical height in mm
+	.bpp 		= 24,
+	.freq 		= 60,
+	.timing = {
+		.h_fp 	= 32,
+		.h_bp 	= 32,
+		.h_sw 	= 14,
+		.v_fp 	= 12,
+		.v_fpe 	= 1,
+		.v_bp 	= 12,
+		.v_bpe 	= 1,
+		.v_sw 	= 8,
+	},
+	.polarity = {
+		.rise_vclk 	= 0,	// Video data fetch at DotClk falling edge
+		.inv_hsync 	= 1,	// Low active
+		.inv_vsync 	= 1,	// Low active
+		.inv_vden 	= 0,	// Data is vaild when DE pin is high
+	},
+};
+
+static int hx8369_reset_lcd(struct platform_device *pdev)
+{
+	int err;
+
+	err = gpio_request(GPIO_MLCD_RST, "MLCD_RST");
+	if (err) {
+		printk(KERN_ERR "failed to request MP0(5) for lcd reset control\n");
+		return err;
+	}
+
+	gpio_direction_output(GPIO_MLCD_RST, 1);
+	gpio_set_value(GPIO_MLCD_RST, 0);
+	msleep(10);
+	gpio_set_value(GPIO_MLCD_RST, 1);
+	gpio_free(GPIO_MLCD_RST);
+
+	return 0;
+}
+
+static struct s3c_platform_fb hx8369_platdata __initdata = {
+	.hw_ver		= 0x62,
+	.clk_name	= "sclk_fimd",
+	.nr_wins	= 5,
+	.default_win	= CONFIG_FB_S3C_DEFAULT_WINDOW,
+	.swap		= FB_SWAP_HWORD | FB_SWAP_WORD,
+	.lcd		= &hx8369_lcd,
+	.reset_lcd	= hx8369_reset_lcd,
+};
+#endif
+
 /* SPI */
 #define LCD_BUS_NUM 3
 
@@ -405,6 +470,7 @@ static struct spi_board_info spi_gpio_board_info[] __initdata = {
 		.chip_select	= 0,
 		.mode		= SPI_MODE_3,
 		.controller_data = (void *)GPIO_DISPLAY_CS,
+		.platform_data	= &venturi_panel_data,
 	},
 #endif
 };
@@ -775,6 +841,11 @@ static void __init venturi_machine_init(void)
 
 	/* SPI */
 	spi_register_board_info(spi_gpio_board_info, ARRAY_SIZE(spi_gpio_board_info));
+
+	/* Display */
+#ifdef CONFIG_FB_S3C_HX8369
+	s3cfb_set_platdata(&hx8369_platdata);
+#endif
 
 	/* ADC */
 #if defined(CONFIG_S5P_ADC)
